@@ -35,3 +35,7 @@ python run.py
 - [ ] Spawn enemigos/asteroides
 - [ ] Coallition dectection
 - [ ] Crecimiento de la nave
+- [ ] Powerups?
+- [ ] Ship HP?
+- [ ] Score
+- [ ] Highscore

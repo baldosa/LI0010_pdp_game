@@ -29,20 +29,24 @@ class PlayerShip:
 
         rotated_point = [pygame.math.Vector2(p).rotate(angle) for p in self.points]
         triangle_points = [(self.current_pos + p * self.scale) for p in rotated_point]
-
+        print(angle)
         pygame.draw.polygon(display, (255, 255, 255), triangle_points)
         return triangle_points[2]
 
 
 class Projectile:
-    def __init__(self, starting_pos):
+    def __init__(self, starting_pos, mouse_pos):
         self.starting_pos = starting_pos  # where we started, dunno why we save it yet
         self.current_pos = starting_pos  # current projectile position
-        self.speed = 10
-        self.radius = 10
+        self.speed = 5
+        self.radius = 15
+        self.mouse_vector = pygame.math.Vector2(mouse_pos)
+        self.angle = pygame.math.Vector2().angle_to(
+            self.mouse_vector - self.current_pos
+        )
 
     def shoot(self, display):
-        pygame.draw.circle(display, (255, 255, 255), self.current_pos, 1)
+        pygame.draw.circle(display, (255, 255, 255), self.current_pos, self.radius)
 
 
 disp = pygame.display.set_mode((700, 700))
@@ -61,21 +65,27 @@ while run:
     mouse_position = pygame.mouse.get_pos()
     keys = pygame.key.get_pressed()
     dt = clock.tick(60) / 1000
-    # get points to draw the ship and the player position
-    # points, player_pos, triangle_point = move(player_pos, 10, mouse_position, keys, dt)
 
+    # surface
     pygame.Surface.fill(disp, (0, 0, 0))
     point = player.move(disp, mouse_position, keys, dt)
 
     if pygame.mouse.get_pressed()[0]:
-        bullets.append(Projectile(point))
-        # print(point)
-        # pygame.draw.circle(disp, (255, 255, 255), point, 1)
+        if len(bullets) < 10:
+            bullets.append(Projectile(point, mouse_position))
 
     for bullet in bullets:
-        bullet.current_pos = [x + bullet.speed for x in bullet.current_pos]
+        bullet.current_pos = pygame.math.Vector2(
+            [x + bullet.speed for x in bullet.current_pos]
+        )
+
+        if all(i >= 700 for i in bullet.current_pos) or all(
+            i <= 0 for i in bullet.current_pos
+        ):
+            bullets.pop(bullets.index(bullet))
 
     for bullet in bullets:
+        print(len(bullets))
         bullet.shoot(disp)
-    print(len(bullets))
+    # print(mouse_position)
     pygame.display.update()
