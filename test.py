@@ -3,6 +3,11 @@ import random
 import math
 
 
+def is_between(val, min_val, max_val):
+    if min_val > val < max_val:
+        return True
+
+
 class PlayerShip:
     def __init__(self, starting_pos):
         self.starting_pos = starting_pos  # where we started, dunno why we save it yet
@@ -25,6 +30,18 @@ class PlayerShip:
         if pressed_keys[pygame.K_d]:
             self.current_pos.x += 100 * dt
 
+        if self.current_pos.x > 700:
+            self.current_pos.x = 0
+
+        if self.current_pos.y > 700:
+            self.current_pos.y = 0
+
+        if self.current_pos.x < 0:
+            self.current_pos.x = 700
+
+        if self.current_pos.y < 0:
+            self.current_pos.y = 700
+
         rotated_point = [pygame.math.Vector2(p).rotate(angle) for p in self.points]
         triangle_points = [(self.current_pos + p * self.scale) for p in rotated_point]
         pygame.draw.polygon(display, (255, 255, 255), triangle_points)
@@ -44,18 +61,33 @@ class Projectile:
         pygame.draw.circle(display, (255, 255, 255), self.current_pos, self.radius)
 
 
+class Enemy:
+    def __init__(self):
+        self.starting_pos = pygame.math.Vector2(
+            (random.randint(0, 700), random.randint(0, 700))
+        )  # where we started, dunno why we save it yet
+        self.current_pos = self.starting_pos  # current projectile position
+        self.angle = random.randint(-180, 180)
+        self.speed = 1
+        self.radius = random.randint(10, 50)
+        self.length = 1
+
+    def move(self, display):
+        pygame.draw.circle(display, (255, 255, 255), self.current_pos, self.radius)
+
+
 disp = pygame.display.set_mode((700, 700))
 clock = pygame.time.Clock()
-run = True
-# player_pos = pygame.math.Vector2((random.randint(0, 700), random.randint(0, 700)))
-player_pos = pygame.math.Vector2(0, 0)
+
+player_pos = pygame.math.Vector2((random.randint(0, 700), random.randint(0, 700)))
 player = PlayerShip(player_pos)
 bullets = []
+enemies = []
+max_enemies = 4
 
+run = True
 while run:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            run = False
+    events = pygame.event.get()
 
     # seteo vars generales
     mouse_position = pygame.mouse.get_pos()
@@ -68,31 +100,53 @@ while run:
     pygame.Surface.fill(disp, (0, 0, 0))
     point = player.move(disp, mouse_angle, keys, dt)
 
-    if pygame.mouse.get_pressed()[0]:
-        # if len(bullets) < 2:
-        print(point)
-        bullets.append(Projectile(point, mouse_angle))
+    for event in events:
+        if event.type == pygame.QUIT:
+            run = False
+        if event.type == pygame.MOUSEBUTTONUP:
+            bullets.append(Projectile(point, mouse_angle))
+
+    if len(enemies) < max_enemies:
+        # amount_to_spawn = random.randint(0, max_enemies - len(enemies))
+        # print("spawning: ", amount_to_spawn)
+        # for i in range(0, amount_to_spawn):
+        enemies.append(Enemy())
 
     for bullet in bullets:
         bullet.length += 10
         bullet.current_pos.y = math.sin(math.radians(bullet.angle)) * bullet.length + (
-            bullet.current_pos.y - bullet.starting_pos.y
+            bullet.current_pos.y
         )
         bullet.current_pos.x = math.cos(math.radians(bullet.angle)) * bullet.length + (
-            bullet.current_pos.x - bullet.starting_pos.x
+            bullet.current_pos.x
         )
-        # print(bullets[0].starting_pos)
-        # print(bullets[0].current_pos)
-        # print(bullet.angle)
-        # print(mouse_angle)
-        # print(bullets[0].speed)
-        # print(bullets[0].radius)
-        # print(bullets[0].length)
+
+        if (
+            bullet.current_pos.x < 0
+            or bullet.current_pos.y < 0
+            or bullet.current_pos.x > 700
+            or bullet.current_pos.y > 700
+        ):
+            bullets.remove(bullet)
 
         bullet.shoot(disp)
-        if all(i >= 700 for i in bullet.current_pos) or all(
-            i <= 0 for i in bullet.current_pos
+
+    for enemy in enemies:
+        enemy.length += 0.1
+        enemy.current_pos.y = math.sin(math.radians(enemy.angle)) * enemy.length + (
+            enemy.current_pos.y
+        )
+        enemy.current_pos.x = math.cos(math.radians(enemy.angle)) * enemy.length + (
+            enemy.current_pos.x
+        )
+        if (
+            enemy.current_pos.x < 0
+            or enemy.current_pos.y < 0
+            or enemy.current_pos.x > 700
+            or enemy.current_pos.y > 700
         ):
-            bullets.pop(bullets.index(bullet))
+            enemies.remove(enemy)
+
+        enemy.move(disp)
 
     pygame.display.update()
