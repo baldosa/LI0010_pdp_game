@@ -31,8 +31,8 @@ python run.py
 
 - [x] Movimiento de la nave
 - [x] Disparo de proyectiles
-- [ ] Ángulo correcto de proyectiles 🫠
-- [ ] Spawn enemigos/asteroides
+- [x] Ángulo correcto de proyectiles 🫠
+- [x] Spawn enemigos/asteroides
 - [ ] Coallition dectection
 - [ ] Crecimiento de la nave
 - [ ] Powerups?
