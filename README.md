@@ -33,9 +33,10 @@ python run.py
 - [x] Disparo de proyectiles
 - [x] Ángulo correcto de proyectiles 🫠
 - [x] Spawn enemigos/asteroides
-- [ ] Coallition dectection
+- [x] Coallition dectection
+- [ ] Better coallition detection
 - [ ] Crecimiento de la nave
 - [ ] Powerups?
 - [ ] Ship HP?
-- [ ] Score
+- [x] Score
 - [ ] Highscore
