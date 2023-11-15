@@ -31,12 +31,15 @@ python run.py
 
 - [x] Movimiento de la nave
 - [x] Disparo de proyectiles
+- [ ] Better velocidad de proyectiles?
 - [x] Ángulo correcto de proyectiles 🫠
 - [x] Spawn enemigos/asteroides
 - [x] Coallition dectection
-- [ ] Better coallition detection
-- [ ] Crecimiento de la nave
+- [ ] Better coallition detection?
+- [x] Crecimiento de la nave
 - [ ] Powerups?
-- [ ] Ship HP?
+- [x] Ship HP?
 - [x] Score
-- [ ] Highscore
+- [x] Highscore
+- [ ] speed everything every X points
+- [ ] modeable settings
