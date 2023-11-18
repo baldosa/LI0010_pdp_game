@@ -6,4 +6,5 @@ BLACK = (0, 0, 0)
 LATERAL_SCREEN_SIZE = 700
 
 # difficulty and gameplay
-MAX_ENEMIES = 4
+MAX_ENEMIES = 6
+MULTIPLIER = 1
